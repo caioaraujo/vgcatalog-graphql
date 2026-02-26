@@ -1,12 +1,18 @@
-from sqlalchemy.orm import Session
-
-from app.models.game import Game
+from app.domain.exceptions import GameAlreadyExistsException
+from app.domain.models import Game
+from app.repositories.game_repository import GameRepository
 from app.schemas.game import GameCreate
 
 
 class GameService:
+    def __init__(self, repository: GameRepository):
+        self.repository = repository
 
-    def create_game(self, db: Session, game: GameCreate):
+    def create_game(self, game: GameCreate):
+        existing = self.repository.get_by_name_and_platform(game.name, game.platform)
+        if existing:
+            raise GameAlreadyExistsException()
+
         db_game = Game(
             name=game.name,
             released_year=game.released_year,
@@ -14,13 +20,10 @@ class GameService:
             genre=game.genre,
             allow_multiplayer=game.allow_multiplayer,
         )
-        db.add(db_game)
-        db.commit()
-        db.refresh(db_game)
-        return db_game
+        return self.repository.create_or_update(db_game)
 
-    def update_game(self, db: Session, game_id: int, game: GameCreate):
-        db_game = db.get(Game, game_id)
+    def update_game(self, game_id: int, game: GameCreate):
+        db_game = self.repository.get_by_id(game_id)
         if not db_game:
             return None
         db_game.name = game.name
@@ -28,7 +31,4 @@ class GameService:
         db_game.platform = game.platform
         db_game.released_year = game.released_year
         db_game.allow_multiplayer = game.allow_multiplayer
-        db.add(db_game)
-        db.commit()
-        db.refresh(db_game)
-        return db_game
+        return self.repository.create_or_update(db_game)

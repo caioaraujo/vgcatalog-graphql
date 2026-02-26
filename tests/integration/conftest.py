@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.db.database import Base
 from app.dependencies import get_db
-from app.models.game import Game
+from app.domain.models import Game
 
 
 @pytest.fixture
@@ -62,5 +62,7 @@ def game_factory(db_session):
             sqlalchemy_session_persistence = "commit"
 
         id = 2
+        name = "Teenage Mutant Ninja Turtles: Turtles in Time"
+        platform = "Super Nintendo"
 
     return _GameFactory
