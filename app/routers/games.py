@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_db
-from app.schemas.game import GameCreate
+from app.schemas.game import Game, GameCreate
 from app.services.game_service import GameService
 
 router = APIRouter(prefix="/games", tags=["games"])
@@ -29,9 +29,14 @@ async def read_game_by_id(game_id: int):
     }
 
 
-@router.put("/{game_id}")
-async def update_game(game_id: int):
-    pass
+@router.put("/{game_id}", response_model=Game)
+async def update_game(game_id: int, game: GameCreate, db: Session = Depends(get_db)):
+    game = GameService().update_game(db, game_id, game)
+    if not game:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Game not found"
+        )
+    return game
 
 
 @router.post("/", response_model=GameCreate)

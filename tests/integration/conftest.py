@@ -1,3 +1,4 @@
+import factory.alchemy
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -6,9 +7,10 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.db.database import Base
 from app.dependencies import get_db
+from app.models.game import Game
 
 
-@pytest.fixture()
+@pytest.fixture
 def engine(postgresql):
     db_url = (
         f"postgresql+psycopg2://{postgresql.info.user}:"
@@ -24,7 +26,7 @@ def engine(postgresql):
     Base.metadata.drop_all(engine)
 
 
-@pytest.fixture()
+@pytest.fixture
 def db_session(engine):
     connection = engine.connect()
     transaction = connection.begin()
@@ -39,7 +41,7 @@ def db_session(engine):
     connection.close()
 
 
-@pytest.fixture()
+@pytest.fixture
 def client(db_session):
     def override_get_db():
         yield db_session
@@ -49,3 +51,16 @@ def client(db_session):
     yield TestClient(app)
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def game_factory(db_session):
+    class _GameFactory(factory.alchemy.SQLAlchemyModelFactory):
+        class Meta:
+            model = Game
+            sqlalchemy_session = db_session
+            sqlalchemy_session_persistence = "commit"
+
+        id = 2
+
+    return _GameFactory
