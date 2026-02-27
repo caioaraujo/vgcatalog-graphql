@@ -44,7 +44,7 @@ def game_retrieve_data():
 
 
 @pytest.fixture
-def repository_create_mock():
+def repository_create_game_is_new_mock():
     mock_repo = MagicMock()
     mock_repo.get_by_name_and_platform.return_value = None
     mock_repo.create_or_update.return_value = Game(
@@ -55,6 +55,13 @@ def repository_create_mock():
         genre="2D Platform",
         allow_multiplayer=True,
     )
+    return mock_repo
+
+
+@pytest.fixture
+def repository_create_game_already_exists_mock(game_retrieve_data):
+    mock_repo = MagicMock()
+    mock_repo.get_by_name_and_platform.return_value = game_retrieve_data
     return mock_repo
 
 

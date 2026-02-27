@@ -1,19 +1,31 @@
+import pytest
+
+from app.domain.exceptions import GameAlreadyExistsException
 from app.services.game_service import GameService
 
 
-def test_create_game(game_create_data, repository_create_mock):
-    service = GameService(repository_create_mock)
+def test_create_game_when_game_is_new(game_create_data, repository_create_game_is_new_mock):
+    service = GameService(repository_create_game_is_new_mock)
 
     result = service.create_game(game_create_data)
 
-    repository_create_mock.get_by_name_and_platform.assert_called_once()
-    repository_create_mock.create_or_update.assert_called_once()
+    repository_create_game_is_new_mock.get_by_name_and_platform.assert_called_once()
+    repository_create_game_is_new_mock.create_or_update.assert_called_once()
 
     assert result.name == "Super Mario World"
     assert result.released_year == 1990
     assert result.platform == "Super Nintendo"
     assert result.genre == "2D Platform"
     assert result.allow_multiplayer is True
+
+
+def test_create_game_when_game_already_exists(game_create_data, repository_create_game_already_exists_mock):
+    service = GameService(repository_create_game_already_exists_mock)
+
+    with pytest.raises(GameAlreadyExistsException):
+        service.create_game(game_create_data)
+
+    repository_create_game_already_exists_mock.get_by_name_and_platform.assert_called_once()
 
 
 def test_update_game_when_game_exists(
