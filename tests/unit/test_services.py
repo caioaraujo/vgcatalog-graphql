@@ -1,6 +1,6 @@
 import pytest
 
-from app.domain.exceptions import GameAlreadyExistsException
+from app.domain.exceptions import GameAlreadyExistsException, GameNotFoundException
 from app.services.game_service import GameService
 
 
@@ -47,11 +47,31 @@ def test_update_game_when_game_exists(
 
 
 def test_update_game_when_game_does_not_exists(
-    game_update_data, repository_update_game_not_exists_mock
+    game_update_data, repository_get_by_id_game_not_exists_mock
 ):
-    service = GameService(repository_update_game_not_exists_mock)
+    service = GameService(repository_get_by_id_game_not_exists_mock)
 
-    result = service.update_game(game_id=9999, game=game_update_data)
+    with pytest.raises(GameNotFoundException):
+        service.update_game(game_id=9999, game=game_update_data)
 
-    repository_update_game_not_exists_mock.get_by_id.assert_called_once_with(9999)
-    assert result is None
+    repository_get_by_id_game_not_exists_mock.get_by_id.assert_called_once_with(9999)
+
+
+def test_fetch_game_when_game_does_not_exists(repository_get_by_id_game_not_exists_mock):
+    service = GameService(repository_get_by_id_game_not_exists_mock)
+
+    with pytest.raises(GameNotFoundException):
+        service.fetch_game(game_id=9999)
+
+    repository_get_by_id_game_not_exists_mock.get_by_id.assert_called_once_with(9999)
+
+
+def test_fetch_game_when_game_exists(repository_get_by_id_game_exists_mock):
+    service = GameService(repository_get_by_id_game_exists_mock)
+
+    result = service.fetch_game(game_id=1000)
+
+    assert result.id == 1000
+    assert result.name == "FinalFantasyVII"
+
+    repository_get_by_id_game_exists_mock.get_by_id.assert_called_once_with(1000)

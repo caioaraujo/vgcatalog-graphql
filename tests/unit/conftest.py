@@ -81,7 +81,14 @@ def repository_update_game_exists_mock(game_retrieve_data):
 
 
 @pytest.fixture
-def repository_update_game_not_exists_mock(game_retrieve_data):
+def repository_get_by_id_game_not_exists_mock(game_retrieve_data):
     mock_repo = MagicMock()
     mock_repo.get_by_id.return_value = None
+    return mock_repo
+
+
+@pytest.fixture
+def repository_get_by_id_game_exists_mock(game_retrieve_data):
+    mock_repo = MagicMock()
+    mock_repo.get_by_id.return_value = game_retrieve_data
     return mock_repo

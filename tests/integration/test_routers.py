@@ -55,3 +55,20 @@ def test_update_game_when_game_exists(client, game_factory):
     assert data["platform"] == "Arcade"
     assert data["genre"] == "Beat em Up"
     assert data["allow_multiplayer"] is False
+
+
+def test_get_game_by_id_when_game_not_found(client):
+    response = client.get("/games/1")
+
+    assert response.status_code == 404
+
+
+def test_get_game_by_id_when_game_exists(client, game_factory):
+    game_factory()
+
+    response = client.get("/games/2")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == 2
+    assert data["name"] == "Teenage Mutant Ninja Turtles: Turtles in Time"

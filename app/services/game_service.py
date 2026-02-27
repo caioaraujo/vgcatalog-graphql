@@ -1,4 +1,4 @@
-from app.domain.exceptions import GameAlreadyExistsException
+from app.domain.exceptions import GameAlreadyExistsException, GameNotFoundException
 from app.domain.models import Game
 from app.repositories.game_repository import GameRepository
 from app.schemas.game import GameCreate
@@ -25,10 +25,16 @@ class GameService:
     def update_game(self, game_id: int, game: GameCreate):
         db_game = self.repository.get_by_id(game_id)
         if not db_game:
-            return None
+            raise GameNotFoundException()
         db_game.name = game.name
         db_game.genre = game.genre
         db_game.platform = game.platform
         db_game.released_year = game.released_year
         db_game.allow_multiplayer = game.allow_multiplayer
         return self.repository.create_or_update(db_game)
+
+    def fetch_game(self, game_id: int):
+        game = self.repository.get_by_id(game_id)
+        if not game:
+            raise GameNotFoundException()
+        return game
