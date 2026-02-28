@@ -8,10 +8,7 @@ def test_get_db_yields_session_and_closes(monkeypatch):
     mock_session = MagicMock()
     mock_session.close = MagicMock()
 
-    monkeypatch.setattr(
-        "app.dependencies.SessionLocal",
-        lambda: mock_session
-    )
+    monkeypatch.setattr("app.dependencies.SessionLocal", lambda: mock_session)
 
     generator = get_db()
 

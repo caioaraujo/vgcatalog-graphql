@@ -26,6 +26,11 @@ class GameService:
         db_game = self.repository.get_by_id(game_id)
         if not db_game:
             raise GameNotFoundException()
+        existed_game_for_platform = self.repository.get_by_name_and_platform(
+            game.name, game.platform
+        )
+        if existed_game_for_platform and existed_game_for_platform.id != game_id:
+            raise GameAlreadyExistsException()
         db_game.name = game.name
         db_game.genre = game.genre
         db_game.platform = game.platform

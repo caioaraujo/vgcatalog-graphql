@@ -9,21 +9,6 @@ from app.services.game_service import GameService
 router = APIRouter(prefix="/games", tags=["games"])
 
 
-@router.get("/")
-def read_games():
-    # FIXME
-    return [
-        {
-            "id": 1,
-            "name": "Super Mario World",
-            "released_year": 1990,
-            "platform": "Super Nintendo",
-            "genre": "2D Platform",
-            "allow_multiplayer": True,
-        }
-    ]
-
-
 @router.get("/{game_id}")
 def read_game_by_id(game_id: int, db: Session = Depends(get_db)):
     repository = GameRepository(db)

@@ -6,3 +6,6 @@ code-formatting:
 
 test:
 	pytest
+
+migrate:
+	alembic upgrade head

@@ -3,9 +3,17 @@
 [!WARNING]
 Project under construction.
 
-An experiment using FastAPI and GraphQL.
-
 The goal of this project is to provide CRUD operations based on Video Game titles, provided by an API using GraphQL.
+
+This project is using:
+- [FastAPI](https://fastapi.tiangolo.com/) to provide the API;
+- [SQLAlchemy](https://www.sqlalchemy.org/) ver. 2 for database interactions;
+- [alembic](https://alembic.sqlalchemy.org/en/latest/) for database migrations;
+- [psycopg2](https://pypi.org/project/psycopg2/) as PostgreSQL client;
+- [pytest](https://pypi.org/project/pytest/) + [pytest-postgresql](https://pypi.org/project/pytest-postgresql/) for tests;
+- [pytest-cov](https://pypi.org/project/pytest-cov/) for tests coverage;
+- [factory_boy](https://factoryboy.readthedocs.io/) to provide models fixtures for tests;
+- [black](https://pypi.org/project/black/) for code formatting.
 
 ## Requirements
 
@@ -29,7 +37,7 @@ This project requires the following environment variables:
 - DATABASE_URL (ex: "postgresql+psycopg2://user:password@host/vgcatalog")
 
 Create a database called "vgcatalog" on Postgres, and then appy all migrations by running:
-`under construction`.
+`alembic upgrade head` or `make migrate`.
 
 ### Running
 
@@ -42,12 +50,10 @@ After running the project, go to http://127.0.0.1:8000/docs.
 
 ## Tests
 
-This project uses [pytest](https://pypi.org/project/pytest/) for testing.
 To run all tests, install all dev dependencies by running `pip install -r requirements.dev.txt` then run `pytest` or
 `make test`.
 
 ## Code formatting
 
-This project uses [black](https://pypi.org/project/black/) for code formatting.
-To do it, install all dev dependencies by running `pip install -r requirements.dev.txt` then run `black .` or
+Install all dev dependencies by running `pip install -r requirements.dev.txt` then run `black .` or
 `make code-formatting`.

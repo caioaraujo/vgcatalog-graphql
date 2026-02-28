@@ -13,7 +13,7 @@ app.include_router(games.router)
 def handle_game_exists(_, __):
     return JSONResponse(
         status_code=400,
-        content={"detail": "Game already exists"},
+        content={"detail": "Game already exists for the given platform"},
     )
 
 
