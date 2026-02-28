@@ -9,7 +9,7 @@ from app.services.game_service import GameService
 router = APIRouter(prefix="/games", tags=["games"])
 
 
-@router.get("/{game_id}")
+@router.get("/{game_id}", response_model=Game)
 def read_game_by_id(game_id: int, db: Session = Depends(get_db)):
     repository = GameRepository(db)
     return GameService(repository).fetch_game(game_id)
@@ -21,7 +21,7 @@ def update_game(game_id: int, game: GameCreate, db: Session = Depends(get_db)):
     return GameService(repository).update_game(game_id, game)
 
 
-@router.post("/", response_model=GameCreate)
+@router.post("/", response_model=Game)
 def create_game(game: GameCreate, db: Session = Depends(get_db)):
     repository = GameRepository(db)
     game = GameService(repository).create_game(game)

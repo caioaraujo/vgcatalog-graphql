@@ -5,7 +5,8 @@ Project under construction.
 
 The goal of this project is to provide CRUD operations based on Video Game titles, provided by an API using GraphQL.
 
-This project is using:
+## Libraries
+This project uses the following libraries:
 - [FastAPI](https://fastapi.tiangolo.com/) to provide the API;
 - [SQLAlchemy](https://www.sqlalchemy.org/) ver. 2 for database interactions;
 - [alembic](https://alembic.sqlalchemy.org/en/latest/) for database migrations;
@@ -14,6 +15,21 @@ This project is using:
 - [pytest-cov](https://pypi.org/project/pytest-cov/) for tests coverage;
 - [factory_boy](https://factoryboy.readthedocs.io/) to provide models fixtures for tests;
 - [black](https://pypi.org/project/black/) for code formatting.
+
+## Project structure
+- alembic: alembic artifacts for database migration
+  - versions: alembic migration files
+- app: the application
+  - core: project configuration artifacts like environment variables
+  - db: database setup artifacts like session factory
+  - domain: models and exceptions
+  - repositories: database interactions layer
+  - routers: all API routes
+  - schemas: data schemas
+  - services: contain all API services where the business rules are applied
+- tests: all tests
+  - integration: cross-layer tests. Contains database integrations in many cases
+  - unit: all unit-based tests
 
 ## Requirements
 

@@ -64,5 +64,8 @@ def game_factory(db_session):
         id = 2
         name = "Teenage Mutant Ninja Turtles: Turtles in Time"
         platform = "Super Nintendo"
+        genre = "BeatEm Up"
+        released_year = 1991
+        allow_multiplayer = True
 
     return _GameFactory
