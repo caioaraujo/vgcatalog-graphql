@@ -6,7 +6,7 @@ from app.repositories.game_repository import GameRepository
 from app.schemas.game import Game, GameCreate
 from app.services.game_service import GameService
 
-router = APIRouter(prefix="/games", tags=["games"])
+router = APIRouter(prefix="/games")
 
 
 @router.get("/{game_id}", response_model=Game)

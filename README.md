@@ -8,6 +8,7 @@ The goal of this project is to provide CRUD operations based on Video Game title
 ## Libraries
 This project uses the following libraries:
 - [FastAPI](https://fastapi.tiangolo.com/) to provide the API;
+- [Strawberry](https://strawberry.rocks/docs) for GraphQL;
 - [SQLAlchemy](https://www.sqlalchemy.org/) ver. 2 for database interactions;
 - [alembic](https://alembic.sqlalchemy.org/en/latest/) for database migrations;
 - [psycopg2](https://pypi.org/project/psycopg2/) as PostgreSQL client;
