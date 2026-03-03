@@ -1,6 +1,10 @@
-class GameAlreadyExistsException(Exception):
+class BusinessRuleException(Exception):
     pass
 
 
-class GameNotFoundException(Exception):
+class GameAlreadyExistsException(BusinessRuleException):
+    pass
+
+
+class GameNotFoundException(BusinessRuleException):
     pass

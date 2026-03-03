@@ -2,16 +2,20 @@ from fastapi import FastAPI, Depends
 from starlette.responses import JSONResponse
 from strawberry.fastapi import GraphQLRouter
 
+from .api.graphql.middleware import BusinessRuleMiddleware
 from .dependencies import get_db
 from .domain.exceptions import GameAlreadyExistsException, GameNotFoundException
-from app.api.graphql import schema
+from app.api.graphql.schema import schema
 from .api.rest import games
 
 app = FastAPI(title="VGCatalog")
+app.add_middleware(BusinessRuleMiddleware)
 
-graphql_app = GraphQLRouter(schema, context_getter=lambda db=Depends(get_db): {"db": db})
+graphql_app = GraphQLRouter(
+    schema, context_getter=lambda db=Depends(get_db): {"db": db}
+)
 
-app.include_router(graphql_app, prefix="/graphql", tags=["GraphQL"])
+app.include_router(graphql_app, prefix="/graphql/games", tags=["GraphQL"])
 app.include_router(games.router, tags=["REST"])
 
 
