@@ -18,3 +18,12 @@ class GameInput:
     platform: str
     released_year: int
     allow_multiplayer: bool
+
+
+@strawberry.input
+class GameFilterInput:
+    name: str | None
+    genre: str | None
+    platform: str | None
+    released_year: int | None
+    allow_multiplayer: bool | None

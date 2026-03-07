@@ -1,15 +1,15 @@
 def test_create_game(client):
     query = """
-        mutation CreateGame($data: GameInput!) {
-            createGame(data: $data) {
-                name
-                genre
-                releasedYear
-                platform
-                allowMultiplayer
-            }
+    mutation CreateGame($data: GameInput!) {
+        createGame(data: $data) {
+            name
+            genre
+            releasedYear
+            platform
+            allowMultiplayer
         }
-        """
+    }
+    """
 
     variables = {
         "data": {
@@ -163,17 +163,17 @@ def test_create_game_that_already_exists(client, game_factory):
 def test_update_game(client, game_factory):
     game_factory()
     query = """
-        mutation UpdateGame($gameId: Int!, $data: GameInput!) {
-            updateGame(gameId: $gameId, data: $data) {
-                id
-                name
-                genre
-                releasedYear
-                platform
-                allowMultiplayer
-            }
+    mutation UpdateGame($gameId: Int!, $data: GameInput!) {
+        updateGame(gameId: $gameId, data: $data) {
+            id
+            name
+            genre
+            releasedYear
+            platform
+            allowMultiplayer
         }
-        """
+    }
+    """
 
     variables = {
         "gameId": 2,
@@ -183,7 +183,7 @@ def test_update_game(client, game_factory):
             "releasedYear": 2015,
             "platform": "PC",
             "allowMultiplayer": False,
-        }
+        },
     }
 
     response = client.post(
@@ -208,17 +208,17 @@ def test_update_game(client, game_factory):
 
 def test_update_game_that_not_exists(client):
     query = """
-        mutation UpdateGame($gameId: Int!, $data: GameInput!) {
-            updateGame(gameId: $gameId, data: $data) {
-                id
-                name
-                genre
-                releasedYear
-                platform
-                allowMultiplayer
-            }
+    mutation UpdateGame($gameId: Int!, $data: GameInput!) {
+        updateGame(gameId: $gameId, data: $data) {
+            id
+            name
+            genre
+            releasedYear
+            platform
+            allowMultiplayer
         }
-        """
+    }
+    """
 
     variables = {
         "gameId": 2,
@@ -228,7 +228,7 @@ def test_update_game_that_not_exists(client):
             "releasedYear": 2015,
             "platform": "PC",
             "allowMultiplayer": False,
-        }
+        },
     }
 
     response = client.post(
@@ -236,3 +236,7 @@ def test_update_game_that_not_exists(client):
     )
 
     assert "errors" in response.json()
+
+
+def test_query_game_by_id(client, game_factory):
+    game_factory()

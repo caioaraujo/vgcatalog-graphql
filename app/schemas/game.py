@@ -16,3 +16,11 @@ class Game(BaseModel):
     platform: str
     genre: str
     allow_multiplayer: bool
+
+
+class GameList(BaseModel):
+    name: str
+    released_year: int
+    platform: str
+    genre: str
+    allow_multiplayer: bool

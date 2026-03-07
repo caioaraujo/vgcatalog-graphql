@@ -18,3 +18,24 @@ class GameRepository:
 
     def get_by_id(self, game_id: int):
         return self.db.get(Game, game_id)
+
+    def get_by_filter(
+        self,
+        name=None,
+        platform=None,
+        genre=None,
+        released_year=None,
+        allow_multiplayer=None,
+    ):
+        query = self.db.query(Game)
+        if name:
+            query = query.filter(Game.name == name)
+        if platform:
+            query = query.filter(Game.platform == platform)
+        if genre:
+            query = query.filter(Game.genre == genre)
+        if released_year is not None:
+            query = query.filter(Game.released_year == released_year)
+        if allow_multiplayer is not None:
+            query = query.filter(Game.allow_multiplayer == allow_multiplayer)
+        return query.all()

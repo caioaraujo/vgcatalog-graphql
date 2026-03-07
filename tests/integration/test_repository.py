@@ -1,3 +1,5 @@
+import pytest
+
 from app.domain.models import Game
 from app.repositories.game_repository import GameRepository
 
@@ -78,3 +80,33 @@ def test_get_by_id_when_game_does_not_exists(db_session):
     result = repository.get_by_id(1)
 
     assert result is None
+
+
+def test_get_by_filter_by_name_and_platform(db_session, games_factory):
+    games_factory.create_batch(2)
+    repository = GameRepository(db_session)
+    result = repository.get_by_filter(name="Game 1", platform="Super Nintendo")
+    assert len(result) == 1
+    game = result[0]
+    assert game.name == "Game 1"
+    assert game.platform == "Super Nintendo"
+
+
+@pytest.mark.parametrize("released_year,len_expected", [(1991, 5), (1992, 0)])
+def test_get_by_filter_by_release_year(
+    db_session, games_factory, released_year, len_expected
+):
+    games_factory.create_batch(5)
+    repository = GameRepository(db_session)
+    result = repository.get_by_filter(released_year=released_year)
+    assert len(result) == len_expected
+
+
+@pytest.mark.parametrize("allow_multiplayer,len_expected", [(True, 5), (False, 0)])
+def test_get_by_filter_by_allow_multiplayer(
+    db_session, games_factory, allow_multiplayer, len_expected
+):
+    games_factory.create_batch(5)
+    repository = GameRepository(db_session)
+    result = repository.get_by_filter(allow_multiplayer=allow_multiplayer)
+    assert len(result) == len_expected

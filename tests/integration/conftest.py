@@ -69,3 +69,21 @@ def game_factory(db_session):
         allow_multiplayer = True
 
     return _GameFactory
+
+
+@pytest.fixture
+def games_factory(db_session):
+    class _GameFactory(factory.alchemy.SQLAlchemyModelFactory):
+        class Meta:
+            model = Game
+            sqlalchemy_session = db_session
+            sqlalchemy_session_persistence = "commit"
+
+        id = factory.Sequence(lambda n: n + 1)
+        name = factory.Sequence(lambda n: f"Game {n}")
+        platform = "Super Nintendo"
+        genre = "Beat Em Up"
+        released_year = 1991
+        allow_multiplayer = True
+
+    return _GameFactory

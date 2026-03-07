@@ -1,7 +1,7 @@
 from app.domain.exceptions import GameAlreadyExistsException, GameNotFoundException
 from app.domain.models import Game
 from app.repositories.game_repository import GameRepository
-from app.schemas.game import GameCreate
+from app.schemas.game import GameCreate, GameList
 
 
 class GameService:
@@ -43,3 +43,12 @@ class GameService:
         if not game:
             raise GameNotFoundException()
         return game
+
+    def list_games(self, game_filter: GameList):
+        return self.repository.get_by_filter(
+            game_filter.name,
+            game_filter.platform,
+            game_filter.genre,
+            game_filter.released_year,
+            game_filter.allow_multiplayer,
+        )

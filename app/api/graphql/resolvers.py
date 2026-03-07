@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 import strawberry
 from graphql import GraphQLError
 from strawberry.types import Info
@@ -6,9 +6,9 @@ from sqlalchemy.orm import Session
 
 from app.domain.exceptions import GameAlreadyExistsException
 from app.repositories.game_repository import GameRepository
-from app.schemas.game import GameCreate
+from app.schemas.game import GameCreate, GameList
 from app.services.game_service import GameService
-from app.api.graphql.types import GameType, GameInput
+from app.api.graphql.types import GameType, GameFilterInput, GameInput
 
 
 @strawberry.type
@@ -25,6 +25,30 @@ class Query:
         if not game:
             return None
         return GameType(id=game.id, name=game.name, genre=game.genre)
+
+    @strawberry.field
+    def games(self, info: Info, data: GameFilterInput) -> List[GameType]:
+        db: Session = info.context["db"]
+        repository = GameRepository(db)
+        game_data = GameList(
+            name=data.name,
+            genre=data.genre,
+            released_year=data.released_year,
+            platform=data.platform,
+            allow_multiplayer=data.allow_multiplayer,
+        )
+        games = GameService(repository).list_games(game_data)
+        return [
+            GameType(
+                id=g.id,
+                name=g.name,
+                genre=g.genre,
+                platform=g.platform,
+                released_year=g.released_year,
+                allow_multiplayer=g.allow_multiplayer,
+            )
+            for g in games
+        ]
 
 
 @strawberry.type
