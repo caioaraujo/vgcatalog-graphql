@@ -63,4 +63,11 @@ class Mutation:
             allow_multiplayer=data.allow_multiplayer,
         )
         updated = GameService(repository).update_game(game_id, game_data)
-        return GameType(id=updated.id, name=updated.name, genre=updated.genre)
+        return GameType(
+            id=updated.id,
+            name=updated.name,
+            genre=updated.genre,
+            released_year=updated.released_year,
+            platform=updated.platform,
+            allow_multiplayer=updated.allow_multiplayer,
+        )

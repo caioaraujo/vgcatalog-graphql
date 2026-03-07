@@ -14,7 +14,9 @@ class BusinessRuleMiddleware(BaseHTTPMiddleware):
             return JSONResponse(
                 status_code=200,
                 content={
-                    "errors": [{"message": str(e), "extensions": {"code": 400}}], # FIXME
-                    "data": None
-                }
+                    "errors": [
+                        {"message": e.message, "extensions": {"code": e.code}}
+                    ],
+                    "data": None,
+                },
             )
