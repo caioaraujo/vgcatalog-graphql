@@ -24,7 +24,14 @@ class Query:
             raise GraphQLError(str(e))
         if not game:
             return None
-        return GameType(id=game.id, name=game.name, genre=game.genre)
+        return GameType(
+            id=game.id,
+            name=game.name,
+            genre=game.genre,
+            platform=game.platform,
+            released_year=game.released_year,
+            allow_multiplayer=game.allow_multiplayer,
+        )
 
     @strawberry.field
     def games(self, info: Info, data: GameFilterInput) -> List[GameType]:

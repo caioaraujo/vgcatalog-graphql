@@ -240,3 +240,57 @@ def test_update_game_that_not_exists(client):
 
 def test_query_game_by_id(client, game_factory):
     game_factory()
+    query = """
+        query GetGame($id: Int!) {
+            game(gameId: $id) {
+                id
+                name
+                genre
+                platform
+                releasedYear
+                allowMultiplayer
+            }
+        }
+    """
+
+    response = client.post(
+        "/graphql/games",
+        json={"query": query, "variables": {"id": 2}},
+    )
+
+    data = response.json()
+
+    assert "errors" not in data
+    assert data["data"]["game"] == {
+        "id": 2,
+        "name": "Teenage Mutant Ninja Turtles: Turtles in Time",
+        "genre": "BeatEm Up",
+        "platform": "Super Nintendo",
+        "releasedYear": 1991,
+        "allowMultiplayer": True,
+    }
+
+
+def test_query_game_by_id_when_not_found(client, game_factory):
+    game_factory()
+    query = """
+        query GetGame($id: Int!) {
+            game(gameId: $id) {
+                id
+                name
+                genre
+                platform
+                releasedYear
+                allowMultiplayer
+            }
+        }
+    """
+
+    response = client.post(
+        "/graphql/games",
+        json={"query": query, "variables": {"id": 99}},
+    )
+
+    data = response.json()
+
+    assert "errors" in data

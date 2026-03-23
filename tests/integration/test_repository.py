@@ -102,6 +102,14 @@ def test_get_by_filter_by_release_year(
     assert len(result) == len_expected
 
 
+def test_get_by_genre(db_session, games_factory):
+    games_factory.create_batch(2)
+    repository = GameRepository(db_session)
+    result = repository.get_by_filter(genre="Beat Em Up")
+    assert len(result) == 2
+    assert all((game.genre == "Beat Em Up" for game in result))
+
+
 @pytest.mark.parametrize("allow_multiplayer,len_expected", [(True, 5), (False, 0)])
 def test_get_by_filter_by_allow_multiplayer(
     db_session, games_factory, allow_multiplayer, len_expected
