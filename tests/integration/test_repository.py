@@ -2,6 +2,7 @@ import pytest
 
 from app.domain.models import Game
 from app.repositories.game_repository import GameRepository
+from app.schemas.game import GameList, StringFilter, IntFilter, BooleanFilter
 
 
 def test_get_by_name_and_platform_when_game_exists(db_session, game_factory):
@@ -85,11 +86,41 @@ def test_get_by_id_when_game_does_not_exists(db_session):
 def test_get_by_filter_by_name_and_platform(db_session, games_factory):
     games_factory.create_batch(2)
     repository = GameRepository(db_session)
-    result = repository.get_by_filter(name="Game 1", platform="Super Nintendo")
+    game_filter = GameList(
+        name=StringFilter(eq="Game 1"), platform=StringFilter(eq="Super Nintendo")
+    )
+    result = repository.get_by_filter(game_filter)
     assert len(result) == 1
     game = result[0]
     assert game.name == "Game 1"
     assert game.platform == "Super Nintendo"
+
+
+def test_get_by_filter_by_name_equals(db_session, games_factory):
+    games_factory.create_batch(2)
+    repository = GameRepository(db_session)
+    game_filter = GameList(name=StringFilter(eq="Game 1"))
+    result = repository.get_by_filter(game_filter)
+    assert len(result) == 1
+    game = result[0]
+    assert game.name == "Game 1"
+
+
+def test_get_by_filter_by_name_contains(db_session, games_factory):
+    games_factory.create_batch(2)
+    repository = GameRepository(db_session)
+    game_filter = GameList(name=StringFilter(contains="Game"))
+    result = repository.get_by_filter(game_filter)
+    assert len(result) == 2
+    assert all(("Game" in game.name for game in result))
+
+
+def test_get_by_filter_by_name_in_list(db_session, games_factory):
+    games_factory.create_batch(3)
+    repository = GameRepository(db_session)
+    game_filter = GameList(name=StringFilter(in_list=["Game 1", "Game 2"]))
+    result = repository.get_by_filter(game_filter)
+    assert len(result) == 2
 
 
 @pytest.mark.parametrize("released_year,len_expected", [(1991, 5), (1992, 0)])
@@ -98,14 +129,16 @@ def test_get_by_filter_by_release_year(
 ):
     games_factory.create_batch(5)
     repository = GameRepository(db_session)
-    result = repository.get_by_filter(released_year=released_year)
+    game_filter = GameList(released_year=IntFilter(eq=released_year))
+    result = repository.get_by_filter(game_filter)
     assert len(result) == len_expected
 
 
 def test_get_by_genre(db_session, games_factory):
     games_factory.create_batch(2)
     repository = GameRepository(db_session)
-    result = repository.get_by_filter(genre="Beat Em Up")
+    game_filter = GameList(genre=StringFilter(eq="Beat Em Up"))
+    result = repository.get_by_filter(game_filter)
     assert len(result) == 2
     assert all((game.genre == "Beat Em Up" for game in result))
 
@@ -116,5 +149,6 @@ def test_get_by_filter_by_allow_multiplayer(
 ):
     games_factory.create_batch(5)
     repository = GameRepository(db_session)
-    result = repository.get_by_filter(allow_multiplayer=allow_multiplayer)
+    game_filter = GameList(allow_multiplayer=BooleanFilter(eq=allow_multiplayer))
+    result = repository.get_by_filter(game_filter)
     assert len(result) == len_expected

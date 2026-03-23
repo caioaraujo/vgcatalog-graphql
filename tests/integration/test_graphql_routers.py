@@ -294,3 +294,60 @@ def test_query_game_by_id_when_not_found(client, game_factory):
     data = response.json()
 
     assert "errors" in data
+
+
+def test_list_games_by_platform(client, games_factory):
+    games_factory.create_batch(5)
+    query = """
+        query GetGames($filters: GameFilterInput!) {
+            games(data: $filters) {
+                id
+                name
+                genre
+                platform
+                releasedYear
+                allowMultiplayer
+            }
+        }
+    """
+
+    response = client.post(
+        "/graphql/games",
+        json={
+            "query": query,
+            "variables": {"filters": {"platform": {"eq": "Super Nintendo"}}},
+        },
+    )
+
+    data = response.json()
+
+    assert "errors" not in data
+    assert len(data["data"]["games"]) == 5
+    assert all(("Super Nintendo" == g["platform"] for g in data["data"]["games"]))
+
+
+def test_list_games_by_name_contains(client, games_factory):
+    games_factory.create_batch(5)
+    query = """
+        query GetGames($filters: GameFilterInput!) {
+            games(data: $filters) {
+                id
+                name
+                genre
+                platform
+                releasedYear
+                allowMultiplayer
+            }
+        }
+    """
+
+    response = client.post(
+        "/graphql/games",
+        json={"query": query, "variables": {"filters": {"name": {"contains": "game"}}}},
+    )
+
+    data = response.json()
+
+    assert "errors" not in data
+    assert len(data["data"]["games"]) == 5
+    assert all(("Game" in g["name"] for g in data["data"]["games"]))

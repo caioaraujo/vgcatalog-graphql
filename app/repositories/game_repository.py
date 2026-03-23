@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.domain.models import Game
+from app.schemas.game import GameList
 
 
 class GameRepository:
@@ -19,23 +20,34 @@ class GameRepository:
     def get_by_id(self, game_id: int):
         return self.db.get(Game, game_id)
 
-    def get_by_filter(
-        self,
-        name=None,
-        platform=None,
-        genre=None,
-        released_year=None,
-        allow_multiplayer=None,
-    ):
+    def get_by_filter(self, filters: GameList):
         query = self.db.query(Game)
-        if name:
-            query = query.filter(Game.name == name)
-        if platform:
-            query = query.filter(Game.platform == platform)
-        if genre:
-            query = query.filter(Game.genre == genre)
-        if released_year is not None:
-            query = query.filter(Game.released_year == released_year)
-        if allow_multiplayer is not None:
-            query = query.filter(Game.allow_multiplayer == allow_multiplayer)
+        query = self._filter_str_field(filters.name, Game.name, query)
+        query = self._filter_str_field(filters.platform, Game.platform, query)
+        query = self._filter_str_field(filters.genre, Game.genre, query)
+        query = self._filter_int_field(filters.released_year, Game.released_year, query)
+        if filters.allow_multiplayer and filters.allow_multiplayer.eq is not None:
+            query = query.filter(Game.allow_multiplayer == filters.allow_multiplayer.eq)
         return query.all()
+
+    def _filter_str_field(self, value, field, query):
+        if not value:
+            return query
+        if value.eq is not None:
+            return query.filter(field == value.eq)
+        if value.contains is not None:
+            return query.filter(field.ilike(f"%{value.contains}%"))
+        if value.in_list:
+            return query.filter(field.in_(value.in_list))
+        return query
+
+    def _filter_int_field(self, value, field, query):
+        if not value:
+            return query
+        if value.eq is not None:
+            return query.filter(field == value.eq)
+        if value.gt is not None:
+            return query.filter(field > value.gt)
+        if value.lt is not None:
+            return query.filter(field < value.lt)
+        return query
