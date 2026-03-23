@@ -2,12 +2,9 @@ from typing import List, Optional
 import strawberry
 from graphql import GraphQLError
 from strawberry.types import Info
-from sqlalchemy.orm import Session
 
-from app.domain.exceptions import GameAlreadyExistsException
-from app.repositories.game_repository import GameRepository
+from app.domain.exceptions import GameNotFoundException
 from app.schemas.game import GameCreate, GameList
-from app.services.game_service import GameService
 from app.api.graphql.types import GameType, GameFilterInput, GameInput
 
 
@@ -16,11 +13,10 @@ class Query:
 
     @strawberry.field
     def game(self, info: Info, game_id: int) -> Optional[GameType]:
-        db: Session = info.context["db"]
-        repository = GameRepository(db)
+        service = info.context["game_service"]
         try:
-            game = GameService(repository).fetch_game(game_id)
-        except GameAlreadyExistsException as e:
+            game = service.fetch_game(game_id)
+        except GameNotFoundException as e:
             raise GraphQLError(str(e))
         if not game:
             return None
@@ -35,8 +31,6 @@ class Query:
 
     @strawberry.field
     def games(self, info: Info, data: GameFilterInput) -> List[GameType]:
-        db: Session = info.context["db"]
-        repository = GameRepository(db)
         game_data = GameList(
             name=data.name,
             genre=data.genre,
@@ -44,7 +38,8 @@ class Query:
             platform=data.platform,
             allow_multiplayer=data.allow_multiplayer,
         )
-        games = GameService(repository).list_games(game_data)
+        service = info.context["game_service"]
+        games = service.list_games(game_data)
         return [
             GameType(
                 id=g.id,
@@ -63,8 +58,6 @@ class Mutation:
 
     @strawberry.mutation
     def create_game(self, info: Info, data: GameInput) -> GameType:
-        db: Session = info.context["db"]
-        repository = GameRepository(db)
         game_data = GameCreate(
             name=data.name,
             genre=data.genre,
@@ -72,7 +65,8 @@ class Mutation:
             platform=data.platform,
             allow_multiplayer=data.allow_multiplayer,
         )
-        created = GameService(repository).create_game(game_data)
+        service = info.context["game_service"]
+        created = service.create_game(game_data)
         return GameType(
             id=created.id,
             name=created.name,
@@ -84,8 +78,6 @@ class Mutation:
 
     @strawberry.mutation
     def update_game(self, info: Info, game_id: int, data: GameInput) -> GameType:
-        db: Session = info.context["db"]
-        repository = GameRepository(db)
         game_data = GameCreate(
             name=data.name,
             genre=data.genre,
@@ -93,7 +85,8 @@ class Mutation:
             platform=data.platform,
             allow_multiplayer=data.allow_multiplayer,
         )
-        updated = GameService(repository).update_game(game_id, game_data)
+        service = info.context["game_service"]
+        updated = service.update_game(game_id, game_data)
         return GameType(
             id=updated.id,
             name=updated.name,
