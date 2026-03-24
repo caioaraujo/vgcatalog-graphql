@@ -1,7 +1,6 @@
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
-from app.api.graphql.types import SortDirection
 from app.domain.models import Game
 from app.schemas.game import GameList
 

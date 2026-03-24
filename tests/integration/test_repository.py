@@ -3,7 +3,14 @@ import pytest
 from app.api.graphql.types import SortDirection
 from app.domain.models import Game
 from app.repositories.game_repository import GameRepository
-from app.schemas.game import GameList, StringFilter, IntFilter, BooleanFilter, PaginationInput, SortInput
+from app.schemas.game import (
+    GameList,
+    StringFilter,
+    IntFilter,
+    BooleanFilter,
+    PaginationInput,
+    SortInput,
+)
 
 
 def test_get_by_name_and_platform_when_game_exists(db_session, game_factory):
@@ -193,8 +200,13 @@ def test_get_by_filter_paginated(db_session, games_factory):
     assert len(result) == 20
 
 
-@pytest.mark.parametrize("direction,first_game,last_game", [("desc", "Game 4", "Game 0"), ("asc", "Game 0", "Game 4")])
-def test_get_by_filter_ordered(db_session, games_factory, direction, first_game, last_game):
+@pytest.mark.parametrize(
+    "direction,first_game,last_game",
+    [("desc", "Game 4", "Game 0"), ("asc", "Game 0", "Game 4")],
+)
+def test_get_by_filter_ordered(
+    db_session, games_factory, direction, first_game, last_game
+):
     games_factory.create_batch(5)
     repository = GameRepository(db_session)
     game_filter = GameList(sort=SortInput(field="name", direction=direction))

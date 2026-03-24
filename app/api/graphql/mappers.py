@@ -1,5 +1,12 @@
 from app.api.graphql.types import GameType, GameFilterInput
-from app.schemas.game import GameList, StringFilter, BooleanFilter, IntFilter, PaginationInput, SortInput
+from app.schemas.game import (
+    GameList,
+    StringFilter,
+    BooleanFilter,
+    IntFilter,
+    PaginationInput,
+    SortInput,
+)
 
 
 def map_filter(filter_input, filter_class):

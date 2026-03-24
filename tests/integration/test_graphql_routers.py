@@ -374,7 +374,10 @@ def test_list_games_with_pagination(client, games_factory):
 
     response = client.post(
         "/graphql/games",
-        json={"query": query, "variables": {"filters": {"pagination": {"limit": 20, "offset": 2}}}},
+        json={
+            "query": query,
+            "variables": {"filters": {"pagination": {"limit": 20, "offset": 2}}},
+        },
     )
 
     data = response.json()
@@ -401,7 +404,10 @@ def test_list_games_with_sort(client, games_factory):
 
     response = client.post(
         "/graphql/games",
-        json={"query": query, "variables": {"filters": {"sort": {"field": "name", "direction": "DESC"}}}},
+        json={
+            "query": query,
+            "variables": {"filters": {"sort": {"field": "name", "direction": "DESC"}}},
+        },
     )
 
     data = response.json()
