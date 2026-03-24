@@ -1,5 +1,7 @@
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
+from app.api.graphql.types import SortDirection
 from app.domain.models import Game
 from app.schemas.game import GameList
 
@@ -28,6 +30,8 @@ class GameRepository:
         query = self._filter_int_field(filters.released_year, Game.released_year, query)
         if filters.allow_multiplayer and filters.allow_multiplayer.eq is not None:
             query = query.filter(Game.allow_multiplayer == filters.allow_multiplayer.eq)
+        query = self._paginate(query, filters.pagination)
+        query = self._sort(query, filters.sort)
         return query.all()
 
     def _filter_str_field(self, value, field, query):
@@ -51,3 +55,15 @@ class GameRepository:
         if value.lt is not None:
             return query.filter(field < value.lt)
         return query
+
+    def _paginate(self, query, pagination):
+        if pagination is not None:
+            query = query.limit(pagination.limit).offset(pagination.offset)
+        return query
+
+    def _sort(self, query, sort):
+        if sort is None:
+            return query
+        if sort.direction == "desc":
+            return query.order_by(desc(sort.field))
+        return query.order_by(sort.field)

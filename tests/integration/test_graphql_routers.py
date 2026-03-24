@@ -1,3 +1,6 @@
+from app.api.graphql.types import SortDirection
+
+
 def test_create_game(client):
     query = """
     mutation CreateGame($data: GameInput!) {
@@ -351,3 +354,59 @@ def test_list_games_by_name_contains(client, games_factory):
     assert "errors" not in data
     assert len(data["data"]["games"]) == 5
     assert all(("Game" in g["name"] for g in data["data"]["games"]))
+
+
+def test_list_games_with_pagination(client, games_factory):
+    games_factory.create_batch(50)
+
+    query = """
+            query GetGames($filters: GameFilterInput!) {
+                games(data: $filters) {
+                    id
+                    name
+                    genre
+                    platform
+                    releasedYear
+                    allowMultiplayer
+                }
+            }
+        """
+
+    response = client.post(
+        "/graphql/games",
+        json={"query": query, "variables": {"filters": {"pagination": {"limit": 20, "offset": 2}}}},
+    )
+
+    data = response.json()
+
+    assert "errors" not in data
+    assert len(data["data"]["games"]) == 20
+
+
+def test_list_games_with_sort(client, games_factory):
+    games_factory.create_batch(5)
+
+    query = """
+        query GetGames($filters: GameFilterInput!) {
+            games(data: $filters) {
+                id
+                name
+                genre
+                platform
+                releasedYear
+                allowMultiplayer
+            }
+        }
+    """
+
+    response = client.post(
+        "/graphql/games",
+        json={"query": query, "variables": {"filters": {"sort": {"field": "name", "direction": "DESC"}}}},
+    )
+
+    data = response.json()
+
+    assert "errors" not in data
+    assert len(data["data"]["games"]) == 5
+    assert data["data"]["games"][0]["name"] == "Game 4"
+    assert data["data"]["games"][-1]["name"] == "Game 0"

@@ -31,8 +31,8 @@ class BooleanFilter:
 
 @strawberry.input
 class PaginationInput:
-    limit: Optional[int] = 10
-    offset: Optional[int] = 0
+    limit: int = 10
+    offset: int = 0
 
 
 @strawberry.input

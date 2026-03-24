@@ -41,8 +41,8 @@ class SortInput(BaseModel):
 
 
 class PaginationInput(BaseModel):
-    limit: Optional[int]
-    offset: Optional[int]
+    limit: int
+    offset: int
 
 
 class GameList(BaseModel):
