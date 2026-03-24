@@ -1,7 +1,4 @@
-from app.api.graphql.types import SortDirection
-
-
-def test_create_game(client):
+def test_create_game__when_success(client):
     query = """
     mutation CreateGame($data: GameInput!) {
         createGame(data: $data) {
@@ -43,7 +40,7 @@ def test_create_game(client):
     assert data["allowMultiplayer"] is False
 
 
-def test_create_game_missing_required_field(client):
+def test_create_game__when_missing_required_field(client):
     query = """
     mutation CreateGame($data: GameInput!) {
         createGame(data: $data) {
@@ -73,7 +70,7 @@ def test_create_game_missing_required_field(client):
     assert body["data"] is None
 
 
-def test_create_game_invalid_type(client):
+def test_create_game__when_input_invalid_type(client):
     query = """
     mutation CreateGame($data: GameInput!) {
         createGame(data: $data) {
@@ -103,7 +100,7 @@ def test_create_game_invalid_type(client):
     assert body["data"] is None
 
 
-def test_create_game_unknown_field(client):
+def test_create_game__using_unknown_field(client):
     query = """
     mutation CreateGame($data: GameInput!) {
         createGame(data: $data) {
@@ -131,7 +128,7 @@ def test_create_game_unknown_field(client):
     assert "errors" in response.json()
 
 
-def test_create_game_that_already_exists(client, game_factory):
+def test_create_game__when_already_exists_by_name_and_platform(client, game_factory):
     game_factory()
     query = """
     mutation CreateGame($data: GameInput!) {
@@ -163,7 +160,7 @@ def test_create_game_that_already_exists(client, game_factory):
     assert "errors" in response.json()
 
 
-def test_update_game(client, game_factory):
+def test_update_game__when_success(client, game_factory):
     game_factory()
     query = """
     mutation UpdateGame($gameId: Int!, $data: GameInput!) {
@@ -209,7 +206,7 @@ def test_update_game(client, game_factory):
     assert data["allowMultiplayer"] is False
 
 
-def test_update_game_that_not_exists(client):
+def test_update_game__when_game_does_not_exists(client):
     query = """
     mutation UpdateGame($gameId: Int!, $data: GameInput!) {
         updateGame(gameId: $gameId, data: $data) {
@@ -241,7 +238,7 @@ def test_update_game_that_not_exists(client):
     assert "errors" in response.json()
 
 
-def test_query_game_by_id(client, game_factory):
+def test_get_games__filter_by_id__returns_one_game(client, game_factory):
     game_factory()
     query = """
         query GetGame($id: Int!) {
@@ -274,7 +271,7 @@ def test_query_game_by_id(client, game_factory):
     }
 
 
-def test_query_game_by_id_when_not_found(client, game_factory):
+def test_get_games__filter_by_id__when_not_found(client, game_factory):
     game_factory()
     query = """
         query GetGame($id: Int!) {
@@ -299,7 +296,7 @@ def test_query_game_by_id_when_not_found(client, game_factory):
     assert "errors" in data
 
 
-def test_list_games_by_platform(client, games_factory):
+def test_get_games__filter_by_platform(client, games_factory):
     games_factory.create_batch(5)
     query = """
         query GetGames($filters: GameFilterInput!) {
@@ -329,7 +326,7 @@ def test_list_games_by_platform(client, games_factory):
     assert all(("Super Nintendo" == g["platform"] for g in data["data"]["games"]))
 
 
-def test_list_games_by_name_contains(client, games_factory):
+def test_get_games__filter_by_name_contains(client, games_factory):
     games_factory.create_batch(5)
     query = """
         query GetGames($filters: GameFilterInput!) {
@@ -356,7 +353,7 @@ def test_list_games_by_name_contains(client, games_factory):
     assert all(("Game" in g["name"] for g in data["data"]["games"]))
 
 
-def test_list_games_with_pagination(client, games_factory):
+def test_get_games__with_pagination(client, games_factory):
     games_factory.create_batch(50)
 
     query = """
@@ -386,7 +383,7 @@ def test_list_games_with_pagination(client, games_factory):
     assert len(data["data"]["games"]) == 20
 
 
-def test_list_games_with_sort(client, games_factory):
+def test_get_games__with_sort(client, games_factory):
     games_factory.create_batch(5)
 
     query = """

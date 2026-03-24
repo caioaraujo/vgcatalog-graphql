@@ -1,4 +1,4 @@
-def test_create_game(client):
+def test_create_game__when_success(client):
     payload = {
         "name": "Super Metroid",
         "released_year": 1991,
@@ -20,7 +20,7 @@ def test_create_game(client):
     assert data["allow_multiplayer"] is False
 
 
-def test_update_game_when_not_found(client):
+def test_update_game__when_game_not_found(client):
     payload = {
         "name": "Super Metroid",
         "released_year": 1991,
@@ -34,7 +34,7 @@ def test_update_game_when_not_found(client):
     assert response.status_code == 404
 
 
-def test_update_game_when_game_exists(client, game_factory):
+def test_update_game__when_success(client, game_factory):
     game_factory()
 
     payload = {
@@ -57,13 +57,13 @@ def test_update_game_when_game_exists(client, game_factory):
     assert data["allow_multiplayer"] is False
 
 
-def test_get_game_by_id_when_game_not_found(client):
+def test_fetch_game__when_game_not_found(client):
     response = client.get("/games/1")
 
     assert response.status_code == 404
 
 
-def test_get_game_by_id_when_game_exists(client, game_factory):
+def test_fetch_game__when_success(client, game_factory):
     game_factory()
 
     response = client.get("/games/2")

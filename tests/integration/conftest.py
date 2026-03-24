@@ -8,6 +8,7 @@ from app.main import app
 from app.db.database import Base
 from app.dependencies import get_db
 from app.domain.models import Game
+from app.repositories.game_repository import GameRepository
 
 
 @pytest.fixture
@@ -51,6 +52,11 @@ def client(db_session):
     yield TestClient(app)
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def repository(db_session):
+    return GameRepository(db_session)
 
 
 @pytest.fixture

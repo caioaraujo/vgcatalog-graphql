@@ -33,7 +33,7 @@ def upgrade() -> None:
         sa.UniqueConstraint("name", "platform", name="uk_name_platform"),
     )
     op.create_index(op.f("ix_games_id"), "games", ["id"], unique=False)
-    op.create_index(op.f("ix_games_name"), "games", ["name"], unique=True)
+    op.create_index(op.f("ix_games_name"), "games", ["name"], unique=False)
     # ### end Alembic commands ###
 
 

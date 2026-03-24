@@ -6,7 +6,7 @@ from app.db.database import Base
 class Game(Base):
     __tablename__ = "games"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
+    name = Column(String, index=True)
     released_year = Column(Integer)
     platform = Column(String)
     genre = Column(String)
