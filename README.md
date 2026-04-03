@@ -11,6 +11,7 @@ This project uses the following libraries:
 - [Strawberry](https://strawberry.rocks/docs) for GraphQL;
 - [SQLAlchemy](https://www.sqlalchemy.org/) ver. 2 for database interactions;
 - [alembic](https://alembic.sqlalchemy.org/en/latest/) for database migrations;
+- [confluent-kafka](https://developer.confluent.io/) for event messaging;
 - [psycopg2](https://pypi.org/project/psycopg2/) as PostgreSQL client;
 - [pytest](https://pypi.org/project/pytest/) + [pytest-postgresql](https://pypi.org/project/pytest-postgresql/) for tests;
 - [pytest-cov](https://pypi.org/project/pytest-cov/) for tests coverage;
