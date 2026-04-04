@@ -1,3 +1,5 @@
+import datetime
+
 import factory.alchemy
 import pytest
 from sqlalchemy import create_engine
@@ -6,9 +8,9 @@ from fastapi.testclient import TestClient
 
 from app.infra.repositories.game_repository_impl import GameRepositoryImpl
 from app.main import app
-from app.core.database import Base
+from app.infra.db.database import Base
 from app.core.dependencies import get_db
-from app.infra.database.models import Game
+from app.infra.orm.models import Game
 
 
 @pytest.fixture
@@ -54,9 +56,14 @@ def client(db_session):
     app.dependency_overrides.clear()
 
 
+class FakeClock:
+    def now(self):
+        return datetime.datetime(2026, 1, 1, 3, 21, 34)
+
+
 @pytest.fixture
 def repository(db_session):
-    return GameRepositoryImpl(db_session)
+    return GameRepositoryImpl(db_session, FakeClock())
 
 
 @pytest.fixture
@@ -73,6 +80,7 @@ def game_factory(db_session):
         genre = "BeatEm Up"
         released_year = 1991
         allow_multiplayer = True
+        created_at = datetime.datetime(2025, 1, 1, 3, 21, 34)
 
     return _GameFactory
 

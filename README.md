@@ -18,19 +18,6 @@ This project uses the following libraries:
 - [factory_boy](https://factoryboy.readthedocs.io/) to provide models fixtures for tests;
 - [black](https://pypi.org/project/black/) for code formatting.
 
-## Project structure
-- alembic: alembic artifacts for database migration
-  - versions: alembic migration files
-- app: the application
-  - core: project artifacts like environment variables, database setup and dependencies management
-  - domain: contains all services and interfaces
-  - infra: contains all implementations
-  - interfaces: contains all graphql layers
-  - schemas: data schemas
-- tests: all tests
-  - integration: cross-layer tests. Contains database integrations in many cases
-  - unit: all unit-based tests
-
 ## Requirements
 
 - Python 3.14+

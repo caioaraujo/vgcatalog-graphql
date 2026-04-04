@@ -1,19 +1,24 @@
+import datetime
+
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
 from app.domain.repositories.game_repository import GameRepository
-from app.infra.database.models import Game
+from app.infra.orm.models import Game
 from app.schemas.game import GameList
 
 
 class GameRepositoryImpl(GameRepository):
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, clock: Clock):
         self.db = db
+        self.clock = clock
 
     def get_by_name_and_platform(self, name: str, platform: str):
         return self.db.query(Game).filter_by(name=name, platform=platform).first()
 
     def create_or_update(self, game: Game):
+        if not game.created_at:
+            game.created_at = self.clock.now()
         self.db.add(game)
         self.db.commit()
         self.db.refresh(game)

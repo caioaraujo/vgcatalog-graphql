@@ -1,7 +1,9 @@
+from typing import List
+
 from app.domain.exceptions import GameAlreadyExistsException, GameNotFoundException
-from app.infra.database.models import Game
+from app.infra.orm.models import Game
 from app.domain.repositories.game_repository import GameRepository
-from app.schemas.game import GameCreate, GameList
+from app.schemas.game import GameCreate
 
 
 class GameService:
@@ -44,5 +46,5 @@ class GameService:
             raise GameNotFoundException()
         return game
 
-    def list_games(self, game_filter: GameList):
+    def list_games(self, game_filter: List):
         return self.repository.get_by_filter(game_filter)

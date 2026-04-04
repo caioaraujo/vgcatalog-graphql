@@ -2,7 +2,7 @@ import json
 
 from confluent_kafka import Producer
 
-from app.domain.repositories.event_bus import EventBus
+from app.domain.events.event_bus import EventBus
 
 
 class KafkaEventBus(EventBus):

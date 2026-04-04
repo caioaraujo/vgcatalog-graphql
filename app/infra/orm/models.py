@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, Boolean, UniqueConstraint
+import datetime
 
-from app.core.database import Base
+from sqlalchemy import Column, Integer, String, Boolean, UniqueConstraint, DateTime
+
+from app.infra.db.database import Base
 
 
 class Game(Base):
@@ -11,5 +13,6 @@ class Game(Base):
     platform = Column(String)
     genre = Column(String)
     allow_multiplayer = Column(Boolean, default=False)
+    created_at = Column(DateTime)
 
     __table_args__ = (UniqueConstraint("name", "platform", name="uk_name_platform"),)

@@ -1,6 +1,8 @@
+import datetime
+
 import pytest
 
-from app.infra.database.models import Game
+from app.infra.orm.models import Game
 from app.schemas.game import (
     GameList,
     StringFilter,
@@ -56,6 +58,7 @@ def test_create_or_update__when_create(repository):
     assert result.platform == game.platform
     assert result.released_year == game.released_year
     assert result.allow_multiplayer == game.allow_multiplayer
+    assert result.created_at == datetime.datetime(2026, 1, 1, 3, 21, 34)
 
 
 def test_create_or_update__when_update(repository, db_session, game_factory):
@@ -78,6 +81,7 @@ def test_create_or_update__when_update(repository, db_session, game_factory):
     assert result.platform == game.platform
     assert result.released_year == game.released_year
     assert result.allow_multiplayer == game.allow_multiplayer
+    assert result.created_at == datetime.datetime(2025, 1, 1, 3, 21, 34)
 
 
 def test_get_by_id__when_game_exists(repository, game_factory):

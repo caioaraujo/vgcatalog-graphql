@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
-from app.infra.database.models import Game
-from app.schemas.game import GameList
+from typing import Any, List
 
 
 class GameRepository(ABC):
@@ -11,7 +10,7 @@ class GameRepository(ABC):
         pass
 
     @abstractmethod
-    def create_or_update(self, game: Game):
+    def create_or_update(self, game: Any):
         pass
 
     @abstractmethod
@@ -19,5 +18,5 @@ class GameRepository(ABC):
         pass
 
     @abstractmethod
-    def get_by_filter(self, filters: GameList):
+    def get_by_filter(self, filters: List):
         pass

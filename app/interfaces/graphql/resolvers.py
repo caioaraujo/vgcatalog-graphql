@@ -3,7 +3,7 @@ import strawberry
 from strawberry.types import Info
 
 from app.interfaces.graphql.mappers import to_game_type, to_game_list
-from app.schemas.game import GameCreate, GameList
+from app.schemas.game import GameCreate
 from app.interfaces.graphql.types import GameType, GameFilterInput, GameInput
 
 
