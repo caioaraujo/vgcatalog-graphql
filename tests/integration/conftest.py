@@ -10,7 +10,7 @@ from app.infra.repositories.game_repository_impl import GameRepositoryImpl
 from app.main import app
 from app.infra.db.database import Base
 from app.core.dependencies import get_db, get_event_bus
-from app.infra.orm.models import Game
+from app.infra.orm.models.game import Game
 
 
 class FakeEventBus:

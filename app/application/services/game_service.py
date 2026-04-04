@@ -1,10 +1,9 @@
 from typing import List
 
-from app.core.config import GAME_CREATED_TOPIC
 from app.domain.events.event_bus import EventBus
-from app.domain.events.game_events import game_created_event
+from app.domain.events.game_events import GameCreatedEvent
 from app.domain.exceptions import GameAlreadyExistsException, GameNotFoundException
-from app.infra.orm.models import Game
+from app.infra.orm.models.game import Game
 from app.domain.repositories.game_repository import GameRepository
 from app.schemas.game import GameCreate
 
@@ -27,10 +26,12 @@ class GameService:
             allow_multiplayer=game.allow_multiplayer,
         )
 
+        # Persist in DB
         game = self.repository.create_or_update(db_game)
 
-        event = game_created_event(game)
-        self.event_bus.publish(GAME_CREATED_TOPIC, event)
+        # Send to event bus
+        event = GameCreatedEvent(game)
+        self.event_bus.publish(event.name, event.payload)
 
         return game
 

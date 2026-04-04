@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from app.infra.orm.models import Game
+from app.infra.orm.models.game import Game
 from app.schemas.game import (
     GameList,
     StringFilter,

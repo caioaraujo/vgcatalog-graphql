@@ -1,5 +1,3 @@
-import datetime
-
 from sqlalchemy import Column, Integer, String, Boolean, UniqueConstraint, DateTime
 
 from app.infra.db.database import Base
