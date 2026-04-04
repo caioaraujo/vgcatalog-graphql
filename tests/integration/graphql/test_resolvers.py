@@ -1,4 +1,7 @@
-def test_create_game__when_success(client):
+import datetime
+
+
+def test_create_game__when_success(client, fake_event_bus):
     query = """
     mutation CreateGame($data: GameInput!) {
         createGame(data: $data) {
@@ -27,6 +30,16 @@ def test_create_game__when_success(client):
 
     assert response.status_code == 200
 
+    expected_event_payload = {
+        "name": "The Witcher 3",
+        "genre": "RPG",
+        "released_year": 2015,
+        "platform": "PC",
+        "allow_multiplayer": False,
+        "created_at": datetime.datetime.now(),
+    }
+    fake_event_bus.assert_event("game.created", **expected_event_payload)
+
     result = response.json()
 
     assert "errors" not in response.json()
@@ -40,7 +53,7 @@ def test_create_game__when_success(client):
     assert data["allowMultiplayer"] is False
 
 
-def test_create_game__when_missing_required_field(client):
+def test_create_game__when_missing_required_field(client, fake_event_bus):
     query = """
     mutation CreateGame($data: GameInput!) {
         createGame(data: $data) {
@@ -66,11 +79,12 @@ def test_create_game__when_missing_required_field(client):
     body = response.json()
 
     assert response.status_code == 200
+    assert len(fake_event_bus.events) == 0
     assert "errors" in body
     assert body["data"] is None
 
 
-def test_create_game__when_input_invalid_type(client):
+def test_create_game__when_input_invalid_type(client, fake_event_bus):
     query = """
     mutation CreateGame($data: GameInput!) {
         createGame(data: $data) {
@@ -96,11 +110,12 @@ def test_create_game__when_input_invalid_type(client):
 
     body = response.json()
 
+    assert len(fake_event_bus.events) == 0
     assert "errors" in body
     assert body["data"] is None
 
 
-def test_create_game__using_unknown_field(client):
+def test_create_game__using_unknown_field(client, fake_event_bus):
     query = """
     mutation CreateGame($data: GameInput!) {
         createGame(data: $data) {
@@ -125,10 +140,13 @@ def test_create_game__using_unknown_field(client):
         json={"query": query, "variables": variables},
     )
 
+    assert len(fake_event_bus.events) == 0
     assert "errors" in response.json()
 
 
-def test_create_game__when_already_exists_by_name_and_platform(client, game_factory):
+def test_create_game__when_already_exists_by_name_and_platform(
+    client, game_factory, fake_event_bus
+):
     game_factory()
     query = """
     mutation CreateGame($data: GameInput!) {
@@ -157,6 +175,7 @@ def test_create_game__when_already_exists_by_name_and_platform(client, game_fact
         json={"query": query, "variables": variables},
     )
 
+    assert len(fake_event_bus.events) == 0
     assert "errors" in response.json()
 
 

@@ -1,3 +1,5 @@
+import datetime
+
 from pydantic import BaseModel
 from typing import Optional, List
 
@@ -17,6 +19,7 @@ class Game(BaseModel):
     platform: str
     genre: str
     allow_multiplayer: bool
+    created_at: datetime.datetime
 
 
 class StringFilter(BaseModel):

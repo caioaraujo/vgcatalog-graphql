@@ -1,7 +1,22 @@
+import datetime
+
 import pytest
 from unittest.mock import MagicMock
 
 from app.schemas.game import Game, GameCreate
+
+
+class FakeEventBus:
+    def __init__(self):
+        self.events = []
+
+    def publish(self, event_type, payload):
+        self.events.append((event_type, payload))
+
+
+@pytest.fixture
+def event_bus():
+    return FakeEventBus()
 
 
 @pytest.fixture
@@ -40,6 +55,7 @@ def game_retrieve_data_1():
         platform="Playstation 2",
         genre="Action RPG",
         allow_multiplayer=True,
+        created_at=datetime.datetime(2026, 1, 1, 23, 44, 2),
     )
 
 
@@ -52,6 +68,7 @@ def game_retrieve_data_2():
         platform="Playstation",
         genre="RPG",
         allow_multiplayer=False,
+        created_at=datetime.datetime(2026, 1, 1, 23, 44, 2),
     )
 
 
@@ -66,6 +83,7 @@ def repository_create_game_is_new_mock():
         platform="Super Nintendo",
         genre="2D Platform",
         allow_multiplayer=True,
+        created_at=datetime.datetime(2026, 1, 1, 23, 44, 2),
     )
     return mock_repo
 
@@ -87,6 +105,7 @@ def repository_update_game_exists_mock(game_retrieve_data_1):
         platform="Playstation",
         genre="JRPG",
         allow_multiplayer=False,
+        created_at=datetime.datetime(2026, 1, 1, 23, 44, 2),
     )
     mock_repo.get_by_name_and_platform.return_value = game
     mock_repo.get_by_id.return_value = game_retrieve_data_1

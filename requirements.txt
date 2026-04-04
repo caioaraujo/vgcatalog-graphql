@@ -1,5 +1,5 @@
 fastapi[standard]==0.135.3
-strawberry-graphql[fastapi]==0.312.2
+strawberry-graphql[fastapi]==0.312.3
 SQLAlchemy==2.0.49
 confluent-kafka==2.14.0
 alembic==1.18.4

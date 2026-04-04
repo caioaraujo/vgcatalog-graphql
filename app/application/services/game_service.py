@@ -1,5 +1,8 @@
 from typing import List
 
+from app.core.config import GAME_CREATED_TOPIC
+from app.domain.events.event_bus import EventBus
+from app.domain.events.game_events import game_created_event
 from app.domain.exceptions import GameAlreadyExistsException, GameNotFoundException
 from app.infra.orm.models import Game
 from app.domain.repositories.game_repository import GameRepository
@@ -7,8 +10,9 @@ from app.schemas.game import GameCreate
 
 
 class GameService:
-    def __init__(self, repository: GameRepository):
+    def __init__(self, repository: GameRepository, event_bus: EventBus):
         self.repository = repository
+        self.event_bus = event_bus
 
     def create_game(self, game: GameCreate):
         existing = self.repository.get_by_name_and_platform(game.name, game.platform)
@@ -22,7 +26,13 @@ class GameService:
             genre=game.genre,
             allow_multiplayer=game.allow_multiplayer,
         )
-        return self.repository.create_or_update(db_game)
+
+        game = self.repository.create_or_update(db_game)
+
+        event = game_created_event(game)
+        self.event_bus.publish(GAME_CREATED_TOPIC, event)
+
+        return game
 
     def update_game(self, game_id: int, game: GameCreate):
         db_game = self.repository.get_by_id(game_id)

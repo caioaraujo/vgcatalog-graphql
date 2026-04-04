@@ -1,4 +1,4 @@
-import datetime
+from typing import Any
 
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
@@ -9,7 +9,7 @@ from app.schemas.game import GameList
 
 
 class GameRepositoryImpl(GameRepository):
-    def __init__(self, db: Session, clock: Clock):
+    def __init__(self, db: Session, clock: Any):
         self.db = db
         self.clock = clock
 

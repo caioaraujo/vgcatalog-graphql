@@ -9,3 +9,9 @@ test:
 
 migrate:
 	alembic upgrade head
+
+install-dependencies:
+	pip install -r requirements.txt
+
+install-dependencies-dev:
+	pip install -r requirements.dev.txt
