@@ -1,11 +1,12 @@
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
-from app.domain.models import Game
+from app.domain.repositories.game_repository import GameRepository
+from app.infra.database.models import Game
 from app.schemas.game import GameList
 
 
-class GameRepository:
+class GameRepositoryImpl(GameRepository):
     def __init__(self, db: Session):
         self.db = db
 

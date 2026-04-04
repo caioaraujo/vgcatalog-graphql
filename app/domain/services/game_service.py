@@ -1,6 +1,6 @@
 from app.domain.exceptions import GameAlreadyExistsException, GameNotFoundException
-from app.domain.models import Game
-from app.repositories.game_repository import GameRepository
+from app.infra.database.models import Game
+from app.domain.repositories.game_repository import GameRepository
 from app.schemas.game import GameCreate, GameList
 
 

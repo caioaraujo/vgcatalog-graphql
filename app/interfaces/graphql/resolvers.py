@@ -2,9 +2,9 @@ from typing import List, Optional
 import strawberry
 from strawberry.types import Info
 
-from app.api.graphql.mappers import to_game_type, to_game_list
+from app.interfaces.graphql.mappers import to_game_type, to_game_list
 from app.schemas.game import GameCreate, GameList
-from app.api.graphql.types import GameType, GameFilterInput, GameInput
+from app.interfaces.graphql.types import GameType, GameFilterInput, GameInput
 
 
 @strawberry.type

@@ -1,6 +1,6 @@
 import pytest
 
-from app.domain.models import Game
+from app.infra.database.models import Game
 from app.schemas.game import (
     GameList,
     StringFilter,

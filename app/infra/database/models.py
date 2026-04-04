@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, UniqueConstraint
 
-from app.db.database import Base
+from app.core.database import Base
 
 
 class Game(Base):

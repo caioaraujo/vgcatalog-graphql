@@ -1,4 +1,4 @@
-from app.api.graphql.types import GameType, GameFilterInput
+from app.interfaces.graphql.types import GameType, GameFilterInput
 from app.schemas.game import (
     GameList,
     StringFilter,

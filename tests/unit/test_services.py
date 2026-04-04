@@ -1,7 +1,7 @@
 import pytest
 
 from app.domain.exceptions import GameAlreadyExistsException, GameNotFoundException
-from app.services.game_service import GameService
+from app.domain.services.game_service import GameService
 
 
 def test_create_game__when_game_is_new(

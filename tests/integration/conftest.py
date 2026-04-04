@@ -4,11 +4,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 
+from app.infra.repositories.game_repository_impl import GameRepositoryImpl
 from app.main import app
-from app.db.database import Base
-from app.dependencies import get_db
-from app.domain.models import Game
-from app.repositories.game_repository import GameRepository
+from app.core.database import Base
+from app.core.dependencies import get_db
+from app.infra.database.models import Game
 
 
 @pytest.fixture
@@ -56,7 +56,7 @@ def client(db_session):
 
 @pytest.fixture
 def repository(db_session):
-    return GameRepository(db_session)
+    return GameRepositoryImpl(db_session)
 
 
 @pytest.fixture
